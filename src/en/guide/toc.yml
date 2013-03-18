@@ -1,5 +1,6 @@
 introduction:
   title: Introduction
+  whatsNew23: What's new in Grails 2.3?
   whatsNew22: What's new in Grails 2.2?
   whatsNew21: What's new in Grails 2.1?
   whatsNew:
@@ -44,7 +45,7 @@ conf:
   configExternalized: Externalized Configuration
   versioning: Versioning
   docengine: Project Documentation
-  ivy:
+  dependencyResolution:
     title: Dependency Resolution
     configurationsAndDependencies: Configurations and Dependencies
     dependencyRepositories: Dependency Repositories
@@ -135,7 +136,6 @@ theWebLayer:
     commandObjects: Command Objects
     formtokens: Handling Duplicate Form Submissions
     typeConverters: Simple Type Converters
-    asynchronousRequestProcessing: Asynchronous Request Processing
   gsp:
     title: Groovy Server Pages
     GSPBasics:
@@ -216,6 +216,13 @@ theWebLayer:
     ajaxWithGWT: Ajax with GWT
     ajaxOnTheServer: Ajax on the Server
   contentNegotiation: Content Negotiation
+async:
+  title: Asynchronous Programming 
+  promises: Promises 
+  asyncGorm: Asynchronous GORM
+  asyncRequests: Asynchronous Request Handling
+  grailsEvents: The Grails Events API
+  asyncServletApi: Servlet 3.0 Async
 validation:
   title: Validation
   constraints: Declaring Constraints
