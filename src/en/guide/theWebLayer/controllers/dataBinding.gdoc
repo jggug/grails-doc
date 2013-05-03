@@ -1,7 +1,5 @@
 Data binding is the act of "binding" incoming request parameters onto the properties of an object or an entire graph of objects. Data binding should deal with all necessary type conversion since request parameters, which are typically delivered by a form submission, are always strings whilst the properties of a Groovy or Java object may well not be.
 
-Grails uses [Spring|http://www.springframework.org]'s underlying data binding capability to perform data binding.
-
 h4. Binding Request Data to the Model
 
 There are two ways to bind request parameters onto the properties of a domain class. The first involves using a domain classes' Map constructor:
@@ -30,6 +28,18 @@ def save() {
 {code}
 
 This has the same effect as using the implicit constructor.
+
+When binding an empty String (a String with no characters in it, not even spaces) to a constrained property which has been configured as nullable, the data binder will convert the empty String to null.  This simplifies the most common case where the intent is to treat an empty form field as having the value null since there isn't a way to actually submit a null as a request parameter.  When this behavior is not desireable the application may assign the value directly.
+
+The mass property binding mechanism will by default automatically trim all Strings at binding time.  To disable this behavior set the grails.databinding.trimStrings value to false in @grails-app/conf/Config.groovy@.
+
+{code:java}
+// the default value is true
+grails.databinding.trimStrings = false
+
+// ...
+
+{code}
 
 {warning}
 These forms of data binding in Grails are very convenient, but also indiscriminate. In other words, they will bind _all_ non-transient, typed instance properties of the target object, including ones that you may not want bound. Just because the form in your UI doesn't submit all the properties, an attacker can still send malign data via a raw HTTP request. Fortunately, Grails also makes it easy to protect against such attacks - see the section titled "Data Binding and Security concerns" for more information.
@@ -135,6 +145,18 @@ Binding to a @Map@ property works the same way except that the list index in the
 {code}
 
 This would bind the selected image into the @Map@ property @images@ under a key of @"cover"@.
+
+When binding to Maps, Arrays and Collections the data binder will automatically grow the size of the collections as necessary.  The default limit to how large the binder will grow a collection is 256.  If the data binder encounters an entry that requires the collection be grown beyond that limit, the entry is ignored.  The limit may be configured by assigning a value to the @grails.databinding.autoGrowCollectionLimit@ property in @Config.groovy@.
+
+{code:java}
+// grails-app/conf/Config.groovy
+
+// the default value is 256
+grails.databinding.autoGrowCollectionLimit = 128
+
+// ...
+
+{code}
 
 h4. Data binding with Multiple domain classes
 
@@ -276,6 +298,10 @@ import org.grails.databinding.converters.ValueConverter
  * form 'city:state' into an Address object.
  */
 class AddressValueConverter implements ValueConverter {
+
+    boolean canConvert(value) {
+        value instanceof String
+    }
 
     def convert(value) {
         def pieces = value.split(':')
